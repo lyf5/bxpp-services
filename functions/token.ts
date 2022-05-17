@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
-import { tokenProps } from '../db/index'
+import { tokenProps } from './db'
 
 /**
  *

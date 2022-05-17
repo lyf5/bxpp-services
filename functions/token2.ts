@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import 'source-map-support/register'
-import { tokenProps } from '../db'
+import { tokenProps } from './db'
 
 const token: APIGatewayProxyHandler = async (event, _context) => {
   try {

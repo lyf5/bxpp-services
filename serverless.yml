@@ -97,6 +97,22 @@ functions:
           method: get
           path: token/{id}
           cors: true
+  
+  contracts: 
+    handler: handler.contract
+    events:
+      - http:
+          method: get
+          path: contract
+          cors: true
+
+  contract: 
+    handler: handler.contract
+    events:
+      - http:
+          method: get
+          path: contract/{id}
+          cors: true
 
   ethusd:
     handler: handler.ethusd

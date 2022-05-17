@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "lib"
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "db/0x7E2C9bbA481d73b13a7379584A693d2246575D96/0x0a44530d5D159B48a2DDaf63323d1B3f47D19AC0.ts"],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",
