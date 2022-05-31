@@ -1,7 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
-import { tokenProps } from './db'
-const fs = require('fs');
 
 /**
  *
@@ -17,9 +15,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     let response: APIGatewayProxyResult;
     var allContractList = [];
     try {
+        const fs = require('fs');
         const userAddressList = fs.readdirSync("./db");
         if ( !event.pathParameters?.id ) {
-            
             userAddressList.forEach(userAddress => {
                 const userContractList = fs.readdirSync("./db/" + userAddress);
                 allContractList.push({userAddress, userContractList});

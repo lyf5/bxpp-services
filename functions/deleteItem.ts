@@ -1,6 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register'
-import { tokenProps } from './db'
 import path from 'path';
 import fs from 'fs';
 
@@ -16,14 +15,14 @@ import fs from 'fs';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
-  const imagePath = JSON.parse(event.body)
-  console.log("for debug. imagePath: ", imagePath);
-
+  const bodyJSON = JSON.parse(event.body)
+  console.log("for debug. bodyJSON ", bodyJSON);
+  
   try {
-    if (!imagePath) {
+    if (!bodyJSON.imagePath) {
       response = {
         statusCode: 501,
-        body: JSON.stringify({message: `No item coule be delete. ${imagePath}`}),
+        body: JSON.stringify({message: `No item coule be delete. ${bodyJSON.imagePath}`}),
         headers: {
           'Access-Control-Allow-Origin': '*',
         },
@@ -31,11 +30,14 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
       return response;
     }
 
-    const index = tokenProps.findIndex(item => item.image === `${imagePath}`); // query data for tokenpath(IPFS HASH) in local db.
+    var jsonFile = require('jsonfile');
+    const tokenProps = jsonFile.readFileSync(`./db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`);
+    
+    const index = tokenProps.findIndex(item => item.image === `${bodyJSON.imagePath}`); // query data for tokenpath(IPFS HASH) in local db.
     if (index === -1) {
       response = {
         statusCode: 502,
-        body: JSON.stringify({message: `IPFS hash ${imagePath} no found in localdb!`}),
+        body: JSON.stringify({message: `IPFS hash ${bodyJSON.imagePath} no found in localdb!`}),
         headers: {
           'Access-Control-Allow-Origin': '*',
         },
@@ -45,7 +47,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
     console.log("for debug. index: ", index);
     console.log("for debug. old content: ", tokenProps);
-    const resule = tokenProps.filter(item => {return item.image !== `${imagePath}`});
+    const resule = tokenProps.filter(item => {return item.image !== `${bodyJSON.imagePath}`});
     console.log("for debug. new content: ", resule);
 
     const content = `export const tokenProps = ${JSON.stringify(resule)}`;

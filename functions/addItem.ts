@@ -1,6 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register'
-import { tokenProps } from './db'
 import path from 'path';
 import fs from 'fs';
 
@@ -16,14 +15,14 @@ import fs from 'fs';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
-  const ipfsHash = JSON.parse(event.body)
-  console.log("for debug. ipfsHash ", ipfsHash);
+  const bodyJSON = JSON.parse(event.body)
+  console.log("for debug. bodyJSON ", bodyJSON);
 
   try {
-    if (!ipfsHash) {
+    if (!bodyJSON.path) {
       response = {
         statusCode: 501,
-        body: JSON.stringify({message: `No objects to be add.: ${ipfsHash}`}),
+        body: JSON.stringify({message: `No objects to be add.: ${bodyJSON.path}`}),
         headers: {
           'Access-Control-Allow-Origin': '*',
         },
@@ -31,12 +30,15 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
       return response;
     }
 
-    const index = tokenProps.findIndex(item => item.image === `https://ipfs.io/ipfs/${ipfsHash}`); // query data for tokenpath(IPFS HASH) in local db.
+    var jsonFile = require('jsonfile');
+    const tokenProps = jsonFile.readFileSync(`./db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`);
+
+    const index = tokenProps.findIndex(item => item.image === `https://ipfs.io/ipfs/${bodyJSON.path}`); // query data for tokenpath(IPFS HASH) in local db.
     if (index !== -1) {
       console.log("for debug. index ", index);
       response = {
         statusCode: 502,
-        body: JSON.stringify({message: `IPFS hash ${ipfsHash} is already exist in localdb!`}),
+        body: JSON.stringify({message: `IPFS hash ${bodyJSON.path} is already exist in localdb!`}),
         headers: {
           'Access-Control-Allow-Origin': '*',
         },
@@ -52,7 +54,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
       mintPrice: mintPrice,
       description: "",
       external_url: "",
-      image: `https://ipfs.io/ipfs/${ipfsHash}`,
+      image: `https://ipfs.io/ipfs/${bodyJSON.path}`,
       name: "",
       attributes: [
         {
@@ -72,7 +74,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
   
     const content = `export const tokenProps = ${JSON.stringify([...tokenProps, ...NFTMetadata])}`
 
-    const file = path.resolve(__dirname, '../', '../db/', 'index.ts')
+    const file = path.resolve(__dirname, '../', `./db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`)
     console.log("for debug. file: ", file);
     await fs.writeFileSync(file, content)
 

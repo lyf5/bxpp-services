@@ -86,7 +86,7 @@ functions:
     handler: handler.token
     events:
       - http:
-          method: get
+          method: post
           path: token
           cors: true
 
@@ -94,7 +94,7 @@ functions:
     handler: handler.token
     events:
       - http:
-          method: get
+          method: post
           path: token/{id}
           cors: true
   

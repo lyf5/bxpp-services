@@ -1,6 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
-import { tokenProps } from './db'
 
 /**
  *
@@ -14,7 +13,15 @@ import { tokenProps } from './db'
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let response: APIGatewayProxyResult;
+    if (event.body === null) return null
     try {
+        const bodyJSON = JSON.parse(event.body)
+        console.log("for debug. bodyJSON ", bodyJSON);
+
+        var jsonFile = require('jsonfile');
+        const tokenProps = jsonFile.readFileSync(`./db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`);
+
+        console.log(tokenProps);
         if (
             event.pathParameters?.id &&
             event.pathParameters?.id.length > 0 &&

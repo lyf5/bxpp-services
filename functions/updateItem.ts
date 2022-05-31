@@ -1,6 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register'
-import { tokenProps } from './db'
 import path from 'path';
 import fs from 'fs';
 
@@ -16,39 +15,42 @@ import fs from 'fs';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
-  const res = JSON.parse(event.body);
-  console.log("for debug. res: ", res);
+  const bodyJSON = JSON.parse(event.body)
+  console.log("for debug. bodyJSON ", bodyJSON);
   try {
       
-    if (!res.index) {
+    if (!bodyJSON.index) {
       response = {
         statusCode: 501,
-        body: JSON.stringify({message: `No objects to be update. Index is null! ${res.index}`}),
+        body: JSON.stringify({message: `No objects to be update. Index is null! ${bodyJSON.index}`}),
         headers: {
           'Access-Control-Allow-Origin': '*',
         },
       };
       return response;
     }
+
+    var jsonFile = require('jsonfile');
+    const tokenProps = jsonFile.readFileSync(`./db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`);
     
-    const index = tokenProps.findIndex(item => item.image == res.tokenpath); // query data for tokenpath(IPFS HASH) in local db.
+    const index = tokenProps.findIndex(item => item.image == bodyJSON.tokenpath); // query data for tokenpath(IPFS HASH) in local db.
     if (index === -1) {
       response = {
         statusCode: 502,
-        body: JSON.stringify({message: `No objects to be update. ${res.tokenpath} don't exist in localdb!`}),
+        body: JSON.stringify({message: `No objects to be update. ${bodyJSON.tokenpath} don't exist in localdb!`}),
         headers: {
           'Access-Control-Allow-Origin': '*',
         },
       };
       return response;
     }
-    console.log("for debug. current id will be updated: ", tokenProps[index].id, res.index);
+    console.log("for debug. current id will be updated: ", tokenProps[index].id, bodyJSON.index);
 
     console.log("for debug. old content: ", tokenProps);
-    tokenProps[index].id = res.index;
-    tokenProps[index].description = `Description for BXPP ${res.index}`,
-    tokenProps[index].external_url = `https://bxpp.io/${res.index}`,
-    tokenProps[index].name = `BXPP ${res.index}`,
+    tokenProps[index].id = bodyJSON.index;
+    tokenProps[index].description = `Description for BXPP ${bodyJSON.index}`,
+    tokenProps[index].external_url = `https://bxpp.io/${bodyJSON.index}`,
+    tokenProps[index].name = `BXPP ${bodyJSON.index}`,
 
     console.log("for debug. new content: ", tokenProps);
 
