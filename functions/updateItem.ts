@@ -54,9 +54,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
     console.log("for debug. new content: ", tokenProps);
 
-    const content = `export const tokenProps = ${JSON.stringify(tokenProps)}`
+    const content = `${JSON.stringify(tokenProps)}`
     
-    const file = path.resolve(__dirname, '../', '../db/', 'index.ts')
+    const file = path.resolve(__dirname, '../', `../db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`)
     console.log("for debug. file: ", file);
     await fs.writeFileSync(file, content)
     

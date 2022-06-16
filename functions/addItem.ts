@@ -72,9 +72,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
       ],
     })
   
-    const content = `export const tokenProps = ${JSON.stringify([...tokenProps, ...NFTMetadata])}`
+    const content = `${JSON.stringify([...tokenProps, ...NFTMetadata])}`
 
-    const file = path.resolve(__dirname, '../', `./db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`)
+    const file = path.resolve(__dirname, '../', `../db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`)
     console.log("for debug. file: ", file);
     await fs.writeFileSync(file, content)
 

@@ -33,15 +33,15 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         }
         
         const client = IpfsClient({
-          host: "ipfs.infura.io",
-          port: Number("5001"),
-          protocol: "https",
+          host: process.env.REACT_APP_HOST,
+          port: Number(process.env.REACT_APP_PORT),
+          protocol: process.env.REACT_APP_PROTOCOL,
           headers: {
             authorization: `Basic ${Buffer.from(
-              "27BJI5914ECKwyqJvs8hMe2ioIR" + ':' + "e7a3d792120ee7de41e93cab3772226b"
+              `${process.env.REACT_APP_PROJECT_ID}:${process.env.REACT_APP_PROJECT_SECRET}`
             ).toString('base64')}`,
           },
-        })
+        });
     
         const objectsIPFS: string[] = await Promise.all(
           objectsToBeMinted.map(async name => {
