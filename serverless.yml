@@ -35,12 +35,12 @@ provider:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    IPFS_HOST: ${env:IPFS_HOST}
-    IPFS_PROTOCOL: ${env:IPFS_PROTOCOL}
-    IPFS_PORT: ${env:IPFS_PORT}
+    IPFS_HOST: ${env:REACT_APP_HOST}
+    IPFS_PROTOCOL: ${env:REACT_APP_PROTOCOL}
+    IPFS_PORT: ${env:REACT_APP_PORT}
     APIETHERSCAN: ${env:APIETHERSCAN}
-    IPFS_INFURA_PROJECT_ID: ${env:IPFS_INFURA_PROJECT_ID}
-    IPFS_INFURA_SECRET: ${env:IPFS_INFURA_SECRET}
+    IPFS_INFURA_PROJECT_ID: ${env:REACT_APP_PROJECT_ID}
+    IPFS_INFURA_SECRET: ${env:REACT_APP_PROJECT_SECRET}
 
 functions:
   app: 
