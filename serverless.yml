@@ -114,6 +114,14 @@ functions:
           path: contract/{id}
           cors: true
 
+  addContract:
+    handler: handler.addContract
+    events:
+      - http:
+          method: post
+          path: addContract
+          cors: true
+
   ethusd:
     handler: handler.ethusd
     events:
