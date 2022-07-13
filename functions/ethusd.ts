@@ -14,11 +14,11 @@ import fetch from 'node-fetch'
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let response: APIGatewayProxyResult;
     try {
-        // const { APIETHERSCAN } = process.env
+        const { REACT_APP_APIETHERSCAN } = process.env
 
         const quote = await (
         await fetch(
-            `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=IUACDEMEC418NZZ3RXU5ZRQ67UXVFM5IR8`
+            `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${REACT_APP_APIETHERSCAN}`
         )
         ).json()
 
