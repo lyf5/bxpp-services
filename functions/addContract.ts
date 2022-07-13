@@ -34,16 +34,32 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         const filePath = path.resolve(__dirname, '../', `../db/${bodyJSON.contractCreator}/${bodyJSON.contractID}`)
         console.log("for debug. filePath ", filePath);
 
-        fs.closeSync(fs.openSync(filePath, 'a'))
-
-        response = {
+        try { 
+            const fd = fs.openSync(filePath, 'ax')
+            console.log('for debug. File does exist'); 
+            await fs.writeFileSync(filePath, "[]")
+            fs.closeSync(fd);
+          } catch (err) { 
+            console.error('for debug: ', err); 
+            response = {
+                statusCode: 500,
+                body: JSON.stringify({
+                    message: 'some error happened, contract does exist!',
+                }),
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            };
+            return response;
+          }
+          response = {
             statusCode: 200,
-            body: 
-                JSON.stringify(filePath),
+            body: JSON.stringify({filePath: filePath}),
             headers: {
-                'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Origin': '*',
             },
         };
+
     } catch (err) {
         console.log(err);
         response = {
